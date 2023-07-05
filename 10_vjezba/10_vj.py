@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.constants import speed_of_light
+from scipy.constants import speed_of_light,elementary_charge
 from scipy.optimize import curve_fit
 
 #FRANCK-HERTZOV POKUS S Ne-CIJEVI
@@ -47,21 +47,29 @@ peaks_measure_x=[0,15.33,21.95,32.08,38.68,49.13,56.09,68.18,74.67,88.08,93.25]
 peaks_measure_y=[0,1.09,0.02,2.21,0.05,3.48,0.97,5.73,3.66,10.82,10.18]
 
 print("Usporedba peakova dobivenih preko Pythona i Measure-a:")
-for i in range (len(peaks_y)):
+delta_E=[]
+delta_E_measure=[]
+for i in range (1,len(peaks_y)):
     if i%2==0:
         print('Minimum: ({} , {}) , ({} , {}) '
               .format(peaks_x[i],peaks_y[i],peaks_measure_x[i],peaks_measure_y[i]))
+        delta_E.append(peaks_x[i]-peaks_x[i-2])
+        delta_E_measure.append(peaks_measure_x[i]-peaks_measure_x[i-2])
+        
     else:
         print('Maximum: ({} , {}) , ({} , {}) '
               .format(peaks_x[i],peaks_y[i],peaks_measure_x[i],peaks_measure_y[i]))
 
+E_prosjek=(delta_E[1]+delta_E[2]+delta_E[3]+delta_E[4])/4
+E_prosjek_measure=(delta_E_measure[1]+delta_E_measure[2]+delta_E_measure[3]+delta_E_measure[4])/4
 
 #plt.plot(peaks_measure_x,peaks_measure_y,'og')
 plt.plot(peaks_x,peaks_y,'or')
-plt.plot(U,y_model,c='r')
-plt.plot(U[idx], I[idx], 'ob')            
+#plt.plot(U,y_model,c='r')
+#plt.plot(U[idx], I[idx], 'ob')            
 plt.plot(U,I)
 plt.ylabel("I/nA")
 plt.xlabel("U/V")
 plt.title('Franck-Hertzov pokus s Ne-cijevi')
+plt.savefig("peaks.png")
 plt.show()
